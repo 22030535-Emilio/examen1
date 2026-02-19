@@ -3,7 +3,6 @@ namespace App\Controllers;
 
 use InvalidArgumentException;
 
-// Incluimos el archivo original del profe
 require_once __DIR__ . '/../GenPassword.php';
 
 class PasswordController
@@ -43,14 +42,12 @@ class PasswordController
     {
         $length = $this->getQueryParam('length', 16, 'int');
         
-        // Validar longitud (requisito del examen: 4-128)
         if ($length < 4 || $length > 128) {
             throw new InvalidArgumentException("La longitud debe estar entre 4 y 128 caracteres");
         }
         
         $options = $this->buildOptionsFromParams();
-        
-        // USANDO LA FUNCIÓN DEL PROFE
+
         $password = generate_password($length, $options);
         
         $this->sendResponse(200, [
@@ -67,7 +64,6 @@ class PasswordController
         $count = $input['count'] ?? 5;
         $length = $input['length'] ?? 16;
         
-        // Validaciones
         if ($count < 1 || $count > 100) {
             throw new InvalidArgumentException("La cantidad debe estar entre 1 y 100");
         }
@@ -77,7 +73,7 @@ class PasswordController
         
         $options = $this->buildOptionsFromInput($input);
         
-        // USANDO LA FUNCIÓN DEL PROFE (AHORA COMPLETADA)
+     
         $passwords = generate_passwords($count, $length, $options);
         
         $this->sendResponse(200, [
