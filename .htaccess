@@ -1,11 +1,4 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    
-    # Si el archivo o directorio existe, servirlo directamente
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-    
-    # Todo lo demás va a index.php
-    RewriteRule ^ index.php [QSA,L]
-</IfModule>
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

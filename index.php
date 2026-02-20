@@ -1,7 +1,10 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+
+require_once __DIR__ . '/src/GenPassword.php';
+require_once __DIR__ . '/src/controllers/PasswordController.php';
 
 use App\Controllers\PasswordController;
+
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');

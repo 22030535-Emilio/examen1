@@ -7,5 +7,3 @@ services:
       - "8083:80"
     volumes:
       - ./:/var/www/html
-    environment:
-      - PHP_ERROR_REPORTING=E_ALL
