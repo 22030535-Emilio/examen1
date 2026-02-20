@@ -1,22 +1,31 @@
-<?php
-
-require_once __DIR__ . '/src/GenPassword.php';
-require_once __DIR__ . '/src/controllers/PasswordController.php';
-
-use App\Controllers\PasswordController;
-
-
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
-$controller = new PasswordController();
-$controller->handleRequest();
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>APIs</title>
+    <style>
+        body { font-family: Arial; margin: 20px; text-align: center; }
+        .botones { margin-top: 50px; }
+        button { 
+            padding: 20px 40px; 
+            margin: 20px; 
+            font-size: 18px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>APIs</h1>
+    
+    <div class="botones">
+        <button onclick="window.location.href='/password.php'">Generador de Contraseñas</button>
+        <button onclick="window.location.href='/qr.php'">Generador de Códigos QR</button>
+        <button onclick="window.location.href='/url.php'">Acortador de URLs</button>
+    </div>
+</body>
+</html>

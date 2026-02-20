@@ -1,7 +1,6 @@
 <?php
-// Sin namespace, o con namespace simple pero sin autoload
 
-// Incluimos GenPassword directamente
+
 require_once __DIR__ . '/../GenPassword.php';
 
 class PasswordController
@@ -12,23 +11,22 @@ class PasswordController
         
         $method = $_SERVER['REQUEST_METHOD'];
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        error_log("Ruta solicitada: " . $path);
         
         try {
-            switch ("$method $path") {
-                case 'GET /api/password':
-                    $this->generateSingle();
-                    break;
-                    
-                case 'POST /api/passwords':
-                    $this->generateMultiple();
-                    break;
-                    
-                case 'POST /api/password/validate':
-                    $this->validatePassword();
-                    break;
-                    
-                default:
-                    $this->sendResponse(404, ['error' => 'Endpoint no encontrado']);
+         
+            if ($method === 'GET' && preg_match('/\/api\/password$/', $path)) {
+                $this->generateSingle();
+            }
+            else if ($method === 'POST' && preg_match('/\/api\/passwords$/', $path)) {
+                $this->generateMultiple();
+            }
+            else if ($method === 'POST' && preg_match('/\/api\/password\/validate$/', $path)) {
+                $this->validatePassword();
+            }
+            else {
+                $this->sendResponse(404, ['error' => 'Endpoint no encontrado', 'path' => $path]);
             }
         } catch (Exception $e) {
             $this->sendResponse(400, ['error' => $e->getMessage()]);
@@ -40,7 +38,7 @@ class PasswordController
         $length = $_GET['length'] ?? 16;
         
         if (!is_numeric($length) || $length < 4 || $length > 128) {
-            throw new Exception("La longitud debe ser entre 4 y 128");
+            throw new Exception("La longitud debe ser entre 4 y 128 caracteres");
         }
         
         $options = [
@@ -53,7 +51,6 @@ class PasswordController
             'require_each' => true
         ];
         
-        // USANDO LA FUNCIÓN DEL PROFE DIRECTAMENTE
         $password = generate_password((int)$length, $options);
         
         $this->sendResponse(200, [
@@ -74,7 +71,7 @@ class PasswordController
             throw new Exception("La cantidad debe ser entre 1 y 100");
         }
         if (!is_numeric($length) || $length < 4 || $length > 128) {
-            throw new Exception("La longitud debe ser entre 4 y 128");
+            throw new Exception("La longitud debe ser entre 4 y 128 caracteres");
         }
         
         $options = [
@@ -87,7 +84,6 @@ class PasswordController
             'require_each' => true
         ];
         
-        // USANDO LA FUNCIÓN DEL PROFE
         $passwords = [];
         for ($i = 0; $i < $count; $i++) {
             $passwords[] = generate_password((int)$length, $options);
@@ -113,12 +109,16 @@ class PasswordController
         $password = $input['password'];
         
         $minLength = $reqs['minLength'] ?? 8;
+        $requireUppercase = $reqs['requireUppercase'] ?? false;
+        $requireNumbers = $reqs['requireNumbers'] ?? false;
+        $requireSymbols = $reqs['requireSymbols'] ?? false;
+        
         $checks = [
             'length' => strlen($password) >= $minLength,
-            'hasUppercase' => !($reqs['requireUppercase'] ?? false) || preg_match('/[A-Z]/', $password),
+            'hasUppercase' => !$requireUppercase || preg_match('/[A-Z]/', $password),
             'hasLowercase' => true,
-            'hasNumbers' => !($reqs['requireNumbers'] ?? false) || preg_match('/[0-9]/', $password),
-            'hasSymbols' => !($reqs['requireSymbols'] ?? false) || preg_match('/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/', $password)
+            'hasNumbers' => !$requireNumbers || preg_match('/[0-9]/', $password),
+            'hasSymbols' => !$requireSymbols || preg_match('/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/', $password)
         ];
         
         $isValid = !in_array(false, $checks, true);

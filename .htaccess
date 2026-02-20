@@ -1,4 +1,15 @@
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
+
+RewriteRule ^api/url.*$ url.php [QSA,L]
+RewriteRule ^api/url/([a-zA-Z0-9]+)/stats$ url.php [QSA,L]
+
+RewriteRule ^([a-zA-Z0-9]+)$ url.php [QSA,L]
+
+RewriteRule ^api/qr/.*$ qr.php [QSA,L]
+
+
+RewriteRule ^api/password.*$ password.php [QSA,L]
+RewriteRule ^api/passwords.*$ password.php [QSA,L]
+RewriteRule ^api/password/validate.*$ password.php [QSA,L]
